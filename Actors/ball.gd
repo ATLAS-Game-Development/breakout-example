@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
-@export var speed: float = 3.0
-@export var max_speed: float = 10.0
+@export var speed: float = 200.0
+@export var max_speed: float = 1000.0
 @export var score_label: RichTextLabel
 @export var start_text: RichTextLabel
 
@@ -19,7 +19,7 @@ func _physics_process(delta: float) -> void:
 
         return
     
-    var collision: KinematicCollision2D = move_and_collide(forward * speed)
+    var collision: KinematicCollision2D = move_and_collide(forward * speed * delta)
     if (collision):
         forward = forward.bounce(collision.get_normal())
         speed = clamp(speed + 0.5, 1, max_speed)
@@ -28,6 +28,10 @@ func _physics_process(delta: float) -> void:
             collision.get_collider().queue_free()
             current_score += 10
             score_label.text = "SCORE: " + str(current_score)
+        
+        if (collision.get_collider().is_in_group("SlowMoPowerUp")):
+            Engine.time_scale = 0.1
+            $SlowMo.start(0.5)
         
         # Paddle bounce should be based on ball position
         if (collision.get_collider().is_in_group("Paddle")):
@@ -42,3 +46,7 @@ func _physics_process(delta: float) -> void:
             is_running = false
             start_text.visible = true
             start_text.text = "GAME OVER"
+
+
+func _on_slow_mo_timeout() -> void:
+    Engine.time_scale = 1

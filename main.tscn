@@ -1,9 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://dlcsl2b4tiuu5"]
+[gd_scene load_steps=13 format=3 uid="uid://dlcsl2b4tiuu5"]
 
 [ext_resource type="Script" path="res://Actors/ball.gd" id="1_q7xo7"]
 [ext_resource type="Script" path="res://Actors/paddle.gd" id="2_a6fvk"]
 [ext_resource type="PackedScene" uid="uid://bky660vw4blfu" path="res://Actors/brick.tscn" id="3_p5lpf"]
 [ext_resource type="Script" path="res://brick_manager.gd" id="3_tyfe8"]
+[ext_resource type="PackedScene" uid="uid://cgp3pnk7dinex" path="res://Actors/slow_mo.tscn" id="5_d83il"]
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_bam4x"]
 
@@ -40,6 +41,10 @@ texture = SubResource("CanvasTexture_bam4x")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Ball"]
 shape = SubResource("RectangleShape2D_60wnu")
+
+[node name="SlowMo" type="Timer" parent="Ball"]
+wait_time = 5.0
+one_shot = true
 
 [node name="Paddle" type="CharacterBody2D" parent="." groups=["Paddle"]]
 position = Vector2(695, 579)
@@ -98,3 +103,8 @@ shape = SubResource("RectangleShape2D_7liwj")
 [node name="BrickManager" type="Node2D" parent="."]
 script = ExtResource("3_tyfe8")
 brick_scene = ExtResource("3_p5lpf")
+
+[node name="SlowMo" parent="." instance=ExtResource("5_d83il")]
+position = Vector2(832, 418)
+
+[connection signal="timeout" from="Ball/SlowMo" to="Ball" method="_on_slow_mo_timeout"]
